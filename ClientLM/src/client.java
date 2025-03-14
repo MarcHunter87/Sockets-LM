@@ -10,7 +10,7 @@ public class client {
 	public static void main(String[] args) throws IOException {
 		
 		Scanner sc = new Scanner(System.in);
-		String clientQuery;
+		String clientQuery = "";
 		
 		System.out.println("Client chat to port" + port + "\n");
 		
@@ -34,16 +34,19 @@ public class client {
 			return;
 		}
 		
-		
-		clientQuery = sc.nextLine();
-		pr.println(clientQuery);
-		pr.flush();
-		
-		InputStreamReader in = new InputStreamReader(s.getInputStream());
-		BufferedReader bf = new BufferedReader(in);
-		
-		String str = bf.readLine();
-		System.out.println("\nServer: " + str + "\n");
+		//TODO while no funciona
+		while (!clientQuery.equalsIgnoreCase(keyword)) {
+			clientQuery = sc.nextLine();
+			pr.println(clientQuery);
+			pr.flush();
+			
+			InputStreamReader in = new InputStreamReader(s.getInputStream());
+			BufferedReader bf = new BufferedReader(in);
+			
+			String str = bf.readLine();
+			System.out.println("\nServer: " + str + "\n");
+			str = null;
+		}
 	}
 
 }
