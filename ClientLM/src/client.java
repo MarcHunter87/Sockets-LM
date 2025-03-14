@@ -4,19 +4,20 @@ import java.util.Scanner;
 
 public class client {
 	
-	private String keyword = "bye";
+	private static String keyword = "bye";
+	private static int port = 1234;
 	
 	public static void main(String[] args) throws IOException {
 		
 		Scanner sc = new Scanner(System.in);
 		String clientQuery;
 		
-		System.out.println("Server chat to port 1234\n");
+		System.out.println("Client chat to port" + port + "\n");
 		
 		Socket s;
 		
 		try {
-			s = new Socket("localhost", 1234);
+			s = new Socket("localhost", port);
 			System.out.println("Inicializing Client: OK!\n");
 		} catch (IOException e) {
 			System.out.println("Inicializing Client: " + e.getMessage() + "\n");
@@ -42,7 +43,7 @@ public class client {
 		BufferedReader bf = new BufferedReader(in);
 		
 		String str = bf.readLine();
-		System.out.println("Server: " + str + "\n");
+		System.out.println("\nServer: " + str + "\n");
 	}
 
 }

@@ -5,15 +5,15 @@ import java.util.Scanner;
 public class server {
 
 	private String keyword = "end";
-	
+	private static int port = 1234;
 	
 	public static void main(String[] args) throws IOException {
 		
-		System.out.println("Server chat at port 1234\n");
+		System.out.println("Server chat at port " + port + "\n");
 		
 		System.out.println("Inicializing Server: OK!\n");
 		
-		ServerSocket ss = new ServerSocket(1234);
+		ServerSocket ss = new ServerSocket(port);
 		
 		Socket s;
 		
