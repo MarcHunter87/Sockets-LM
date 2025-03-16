@@ -22,6 +22,8 @@ public class server {
             System.out.println("Connection from Client: OK!\n");
         } catch (IOException e) {
             System.out.println("Connection from Client: " + e.getMessage() + "\n");
+            sc.close();
+            ss.close();
             return;
         }
 
@@ -31,6 +33,9 @@ public class server {
             System.out.println("Inicializing Chat: OK");
         } catch (IOException e) {
             System.out.println("Inicializing Chat: " + e.getMessage());
+            sc.close();
+            ss.close();
+            s.close();
             return;
         }
 
@@ -51,7 +56,7 @@ public class server {
             System.out.print("Server: ");
             str = sc.nextLine();
 
-            if (str.equalsIgnoreCase(keyword) || str.equalsIgnoreCase("bye")) {
+            if (str.toLowerCase().contains(keyword) || str.toLowerCase().contains("bye")) {
                 System.out.println("\nKeyword Detected!");
                 break;
             }

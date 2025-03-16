@@ -19,6 +19,7 @@ public class client {
             System.out.println("Inicializing Client: OK!\n");
         } catch (IOException e) {
             System.out.println("Inicializing Client: " + e.getMessage() + "\n");
+            sc.close();
             return;
         }
 
@@ -28,6 +29,8 @@ public class client {
             System.out.println("Inicializing Chat: OK!\n");
         } catch (IOException e) {
             System.out.println("Inicializing Chat: " + e.getMessage() + "\n");
+            sc.close();
+            s.close();
             return;
         }
 
@@ -39,7 +42,7 @@ public class client {
             System.out.print("Client: ");
             str = sc.nextLine();
 
-            if (str.equalsIgnoreCase(keyword) || str.equalsIgnoreCase("end")) {
+            if (str.toLowerCase().contains(keyword) || str.toLowerCase().contains("end")) {
                 System.out.println("\nKeyword Detected!");
                 break;
             }
