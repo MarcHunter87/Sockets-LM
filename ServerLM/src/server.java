@@ -9,6 +9,8 @@ public class server {
 	
 	public static void main(String[] args) throws IOException {
 		
+		Scanner sc = new Scanner(System.in);
+
 		System.out.println("Server chat at port " + port + "\n");
 		
 		System.out.println("Inicializing Server: OK!\n");
@@ -36,15 +38,17 @@ public class server {
 		}
 
 		BufferedReader bf = new BufferedReader(in);
-		
-		String str = bf.readLine();
-		System.out.println("Client: " + str + "\n");
-		
-		PrintWriter pr = new PrintWriter(s.getOutputStream());
-		
-		pr.println("Yes\n");
-		pr.flush();
-		
-	}
-
+        PrintWriter pr = new PrintWriter(s.getOutputStream());
+        
+        String str;
+        while (true) {
+            str = bf.readLine();
+            System.out.println("\nClient: " + str + "\n");
+            
+            System.out.print("Server: ");
+            str = sc.nextLine();
+            pr.println(str);
+            pr.flush();
+        }
+    }  
 }
