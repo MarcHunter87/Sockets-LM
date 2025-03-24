@@ -6,6 +6,7 @@ public class server {
 
     private static String keyword = "end";
     private static int port = 1234;
+    private static String clientKeyword;
 
     public static void main(String[] args) throws IOException {
 
@@ -42,6 +43,10 @@ public class server {
         BufferedReader bf = new BufferedReader(in);
         PrintWriter pr = new PrintWriter(s.getOutputStream());
 
+        clientKeyword = bf.readLine();
+        pr.println(keyword);
+        pr.flush();
+
         String str;
         while (true) {
             str = bf.readLine();
@@ -56,7 +61,7 @@ public class server {
             System.out.print("Server: ");
             str = sc.nextLine();
 
-            if (str.toLowerCase().contains(keyword) || str.toLowerCase().contains("bye")) {
+            if (str.toLowerCase().contains(keyword) || str.toLowerCase().contains(clientKeyword)) {
                 System.out.println("\nKeyword Detected!");
                 break;
             }
