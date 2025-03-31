@@ -10,7 +10,7 @@ public class client {
 
     public static void main(String[] args) throws IOException {
 
-        Scanner sc = new Scanner(System.in);
+        Scanner scanner = new Scanner(System.in);
 
         System.out.println("PORT_SERVIDOR: " + port);
         System.out.println("PARAULA_CLAU_CLIENT: " + clientKeyword + "\n");
@@ -23,7 +23,7 @@ public class client {
             System.out.println("Inicializing Client: OK!\n");
         } catch (IOException e) {
             System.out.println("Inicializing Client: " + e.getMessage() + "\n");
-            sc.close();
+            scanner.close();
             return;
         }
 
@@ -33,7 +33,7 @@ public class client {
             System.out.println("Inicializing Chat: OK!\n");
         } catch (IOException e) {
             System.out.println("Inicializing Chat: " + e.getMessage() + "\n");
-            sc.close();
+            scanner.close();
             s.close();
             return;
         }
@@ -48,7 +48,7 @@ public class client {
         String str;
         while (true) {
             System.out.print("Client: ");
-            str = sc.nextLine();
+            str = scanner.nextLine();
 
             if (str.toLowerCase().contains(clientKeyword)) {
                 pr.println(clientKeyword);
@@ -79,7 +79,7 @@ public class client {
         }
 
         try {
-			sc.close();
+			scanner.close();
 			pr.close();
 			in.close();
             bf.close();
