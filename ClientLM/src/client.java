@@ -4,13 +4,16 @@ import java.util.Scanner;
 
 public class client {
 
-    private static String keyword = "bye";
+    private static String clientKeyword = "bye";
     private static int port = 1234;
     private static String serverKeyword;
 
     public static void main(String[] args) throws IOException {
 
         Scanner sc = new Scanner(System.in);
+
+        System.out.println("PORT_SERVIDOR: " + port);
+        System.out.println("PARAULA_CLAU_CLIENT: " + clientKeyword + "\n");
 
         System.out.println("Client chat to port " + port + "\n");
 
@@ -38,7 +41,7 @@ public class client {
         InputStreamReader in = new InputStreamReader(s.getInputStream());
         BufferedReader bf = new BufferedReader(in);
 
-        pr.println(keyword);
+        pr.println(clientKeyword);
         pr.flush();
         serverKeyword = bf.readLine();
 
@@ -47,18 +50,28 @@ public class client {
             System.out.print("Client: ");
             str = sc.nextLine();
 
-            if (str.toLowerCase().contains(keyword) || str.toLowerCase().contains(serverKeyword)) {
-                System.out.println("\nKeyword Detected!");
+            if (str.toLowerCase().contains(clientKeyword)) {
+                pr.println(clientKeyword);
+                pr.flush();
+                System.out.println("\nClient Keyword Detected!");
+                break;
+            } else if (str.toLowerCase().contains(serverKeyword)) {
+                pr.println(serverKeyword);
+                pr.flush();
+                System.out.println("\nServer Keyword Detected!");
                 break;
             }
 
-            pr.println(str);
+            pr.println(str.trim());
             pr.flush();
 
             str = bf.readLine();
 
-            if (str == null) {
-                System.out.println("\nKeyword Detected!");
+            if (str.toLowerCase().contains(clientKeyword)) {
+                System.out.println("\nClient Keyword Detected!");
+                break;
+            } else if (str.toLowerCase().contains(serverKeyword)) {
+                System.out.println("\nServer Keyword Detected!");
                 break;
             }
 

@@ -4,13 +4,16 @@ import java.util.Scanner;
 
 public class server {
 
-    private static String keyword = "end";
+    private static String serverKeyword = "end";
     private static int port = 1234;
     private static String clientKeyword;
 
     public static void main(String[] args) throws IOException {
 
         Scanner sc = new Scanner(System.in);
+
+        System.out.println("PORT_SERVIDOR: " + port);
+        System.out.println("PARAULA_CLAU_SERVIDOR: " + serverKeyword + "\n");
 
         System.out.println("Server chat at port " + port + "\n");
         System.out.println("Inicializing Server: OK!\n");
@@ -44,15 +47,18 @@ public class server {
         PrintWriter pr = new PrintWriter(s.getOutputStream());
 
         clientKeyword = bf.readLine();
-        pr.println(keyword);
+        pr.println(serverKeyword);
         pr.flush();
 
         String str;
         while (true) {
             str = bf.readLine();
 
-            if (str == null) {
-                System.out.println("\nKeyword Detected!");
+            if (str.toLowerCase().contains(serverKeyword)) {
+                System.out.println("\nServer Keyword Detected!");
+                break;
+            } else if (str.toLowerCase().contains(clientKeyword)) {
+                System.out.println("\nClient Keyword Detected!");
                 break;
             }
 
@@ -61,12 +67,19 @@ public class server {
             System.out.print("Server: ");
             str = sc.nextLine();
 
-            if (str.toLowerCase().contains(keyword) || str.toLowerCase().contains(clientKeyword)) {
-                System.out.println("\nKeyword Detected!");
+            if (str.toLowerCase().contains(serverKeyword)) {
+                pr.println(serverKeyword);
+                pr.flush();
+                System.out.println("\nServer Keyword Detected!");
+                break;
+            } else if (str.toLowerCase().contains(clientKeyword)) {
+                pr.println(clientKeyword);
+                pr.flush();
+                System.out.println("\nClient Keyword Detected!");
                 break;
             }
-			
-            pr.println(str);
+            
+            pr.println(str.trim());
             pr.flush();
         }
 
