@@ -63,10 +63,12 @@ public class server {
                 breakLoop = false;
             }
 
-            System.out.println("\nClient: " + str + "\n");
-
-            System.out.print("Server: ");
-            str = scanner.nextLine();
+            System.out.println("\nClient: " + str);
+            
+            if (breakLoop) {
+                System.out.print("\nServer: ");
+                str = scanner.nextLine();
+            }
 
             if (str.toLowerCase().contains(serverKeyword)) {
                 pr.println(serverKeyword);

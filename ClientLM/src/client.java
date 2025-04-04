@@ -61,22 +61,21 @@ public class client {
                 pr.flush();
                 System.out.println("\nServer Keyword Detected!");
                 breakLoop = false;
+            } else {
+                pr.println(str.trim());
+                pr.flush();
+                
+                str = bf.readLine();
+                if (str.toLowerCase().contains(clientKeyword)) {
+                    System.out.println("\nClient Keyword Detected!");
+                    breakLoop = false;
+                } else if (str.toLowerCase().contains(serverKeyword)) {
+                    System.out.println("\nServer Keyword Detected!");
+                    breakLoop = false;
+                } else {
+                    System.out.println("\nServer: " + str);
+                }
             }
-
-            pr.println(str.trim());
-            pr.flush();
-
-            str = bf.readLine();
-
-            if (str.toLowerCase().contains(clientKeyword)) {
-                System.out.println("\nClient Keyword Detected!");
-                breakLoop = false;
-            } else if (str.toLowerCase().contains(serverKeyword)) {
-                System.out.println("\nServer Keyword Detected!");
-                breakLoop = false;
-            }
-
-            System.out.println("\nServer: " + str);
         }
 
         try {
