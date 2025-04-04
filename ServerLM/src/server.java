@@ -51,15 +51,16 @@ public class server {
         pr.flush();
 
         String str;
-        while (true) {
+        boolean breakLoop = true;
+        while (breakLoop) {
             str = bf.readLine();
 
             if (str.toLowerCase().contains(serverKeyword)) {
                 System.out.println("\nServer Keyword Detected!");
-                break;
+                breakLoop = false;
             } else if (str.toLowerCase().contains(clientKeyword)) {
                 System.out.println("\nClient Keyword Detected!");
-                break;
+                breakLoop = false;
             }
 
             System.out.println("\nClient: " + str + "\n");
@@ -71,12 +72,12 @@ public class server {
                 pr.println(serverKeyword);
                 pr.flush();
                 System.out.println("\nServer Keyword Detected!");
-                break;
+                breakLoop = false;
             } else if (str.toLowerCase().contains(clientKeyword)) {
                 pr.println(clientKeyword);
                 pr.flush();
                 System.out.println("\nClient Keyword Detected!");
-                break;
+                breakLoop = false;
             }
             
             pr.println(str.trim());
