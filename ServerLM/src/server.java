@@ -91,7 +91,7 @@ public class server {
             pr.close();
             System.out.println("\nClosing Chat: OK");
         } catch (IOException e) {
-            System.out.println("\nClosing Chat: " + e.getMessage() + "\n");
+            System.out.println("\nClosing Chat: " + e.getMessage());
         }
 
         try {

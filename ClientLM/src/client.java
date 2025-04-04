@@ -61,10 +61,10 @@ public class client {
                 pr.flush();
                 System.out.println("\nServer Keyword Detected!");
                 breakLoop = false;
-            } else {
-                pr.println(str.trim());
-                pr.flush();
             }
+
+            pr.println(str.trim());
+            pr.flush();
 
             str = bf.readLine();
 
@@ -86,7 +86,7 @@ public class client {
             bf.close();
             System.out.println("\nClosing Chat: OK");
         } catch (IOException e) {
-            System.out.println("\nClosing Chat: " + e.getMessage() + "\n");
+            System.out.println("\nClosing Chat: " + e.getMessage());
         }
 
         try {
