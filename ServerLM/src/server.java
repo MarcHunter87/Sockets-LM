@@ -13,19 +13,19 @@ public class server {
         Scanner scanner = new Scanner(System.in);
 
         System.out.println("PORT_SERVIDOR: " + port);
-        System.out.println("PARAULA_CLAU_SERVIDOR: " + serverKeyword + "\n");
+        System.out.println("PARAULA_CLAU_SERVIDOR: " + serverKeyword);
 
-        System.out.println("Server chat at port " + port + "\n");
-        System.out.println("Inicializing Server: OK!\n");
+        System.out.println("\nServer chat at port " + port);
+        System.out.println("\nInicializing Server: OK");
 
         ServerSocket ss = new ServerSocket(port);
         Socket s;
 
         try {
             s = ss.accept();
-            System.out.println("Connection from Client: OK!\n");
+            System.out.println("\nConnection from Client: OK");
         } catch (IOException e) {
-            System.out.println("Connection from Client: " + e.getMessage() + "\n");
+            System.out.println("\nConnection from Client: " + e.getMessage());
             scanner.close();
             ss.close();
             return;
@@ -34,9 +34,9 @@ public class server {
         InputStreamReader in;
         try {
             in = new InputStreamReader(s.getInputStream());
-            System.out.println("Inicializing Chat: OK");
+            System.out.println("\nInicializing Chat: OK");
         } catch (IOException e) {
-            System.out.println("Inicializing Chat: " + e.getMessage());
+            System.out.println("\nInicializing Chat: " + e.getMessage());
             scanner.close();
             ss.close();
             s.close();
@@ -55,35 +55,34 @@ public class server {
         while (breakLoop) {
             str = bf.readLine();
 
+            System.out.println("\nClient: " + str);
+
             if (str.toLowerCase().contains(serverKeyword)) {
                 System.out.println("\nServer Keyword Detected!");
                 breakLoop = false;
             } else if (str.toLowerCase().contains(clientKeyword)) {
                 System.out.println("\nClient Keyword Detected!");
                 breakLoop = false;
-            }
-
-            System.out.println("\nClient: " + str);
-            
-            if (breakLoop) {
+            } else {
+                
                 System.out.print("\nServer: ");
                 str = scanner.nextLine();
-            }
 
-            if (str.toLowerCase().contains(serverKeyword)) {
-                pr.println(serverKeyword);
-                pr.flush();
-                System.out.println("\nServer Keyword Detected!");
-                breakLoop = false;
-            } else if (str.toLowerCase().contains(clientKeyword)) {
-                pr.println(clientKeyword);
-                pr.flush();
-                System.out.println("\nClient Keyword Detected!");
-                breakLoop = false;
+                if (str.toLowerCase().contains(serverKeyword)) {
+                    pr.println(str);
+                    pr.flush();
+                    System.out.println("\nServer Keyword Detected!");
+                    breakLoop = false;
+                } else if (str.toLowerCase().contains(clientKeyword)) {
+                    pr.println(str);
+                    pr.flush();
+                    System.out.println("\nClient Keyword Detected!");
+                    breakLoop = false;
+                } else {
+                    pr.println(str.trim());
+                    pr.flush();
+                }
             }
-            
-            pr.println(str.trim());
-            pr.flush();
         }
 
         try {

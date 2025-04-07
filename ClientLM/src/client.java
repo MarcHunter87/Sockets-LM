@@ -13,26 +13,28 @@ public class client {
         Scanner scanner = new Scanner(System.in);
 
         System.out.println("PORT_SERVIDOR: " + port);
-        System.out.println("PARAULA_CLAU_CLIENT: " + clientKeyword + "\n");
+        System.out.println("PARAULA_CLAU_CLIENT: " + clientKeyword);
 
-        System.out.println("Client chat to port " + port + "\n");
+        System.out.println("\nClient chat to port " + port);
 
         Socket s;
         try {
             s = new Socket("localhost", port);
-            System.out.println("Inicializing Client: OK!\n");
+            System.out.println("\nInicializing Client: OK");
         } catch (IOException e) {
-            System.out.println("Inicializing Client: " + e.getMessage() + "\n");
+            System.out.println("\nInicializing Client: " + e.getMessage());
             scanner.close();
             return;
         }
 
+        System.out.println("\n");
+
         PrintWriter pr;
         try {
             pr = new PrintWriter(s.getOutputStream());
-            System.out.println("Inicializing Chat: OK!\n");
+            System.out.println("\nInicializing Chat: OK");
         } catch (IOException e) {
-            System.out.println("Inicializing Chat: " + e.getMessage() + "\n");
+            System.out.println("\nInicializing Chat: " + e.getMessage());
             scanner.close();
             s.close();
             return;
@@ -48,16 +50,16 @@ public class client {
         String str;
         boolean breakLoop = true;
         while (breakLoop) {
-            System.out.print("Client: ");
+            System.out.print("\nClient: ");
             str = scanner.nextLine();
 
             if (str.toLowerCase().contains(clientKeyword)) {
-                pr.println(clientKeyword);
+                pr.println(str);
                 pr.flush();
                 System.out.println("\nClient Keyword Detected!");
                 breakLoop = false;
             } else if (str.toLowerCase().contains(serverKeyword)) {
-                pr.println(serverKeyword);
+                pr.println(str);
                 pr.flush();
                 System.out.println("\nServer Keyword Detected!");
                 breakLoop = false;
@@ -66,14 +68,14 @@ public class client {
                 pr.flush();
                 
                 str = bf.readLine();
+                System.out.println("\nServer: " + str);
+
                 if (str.toLowerCase().contains(clientKeyword)) {
                     System.out.println("\nClient Keyword Detected!");
                     breakLoop = false;
                 } else if (str.toLowerCase().contains(serverKeyword)) {
                     System.out.println("\nServer Keyword Detected!");
                     breakLoop = false;
-                } else {
-                    System.out.println("\nServer: " + str);
                 }
             }
         }
