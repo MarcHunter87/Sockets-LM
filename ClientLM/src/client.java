@@ -50,33 +50,38 @@ public class client {
         String str;
         boolean breakLoop = true;
         while (breakLoop) {
-            System.out.print("\nClient: ");
-            str = scanner.nextLine();
-
-            if (str.toLowerCase().contains(clientKeyword)) {
-                pr.println(str);
-                pr.flush();
-                System.out.println("\nClient Keyword Detected!");
-                breakLoop = false;
-            } else if (str.toLowerCase().contains(serverKeyword)) {
-                pr.println(str);
-                pr.flush();
-                System.out.println("\nServer Keyword Detected!");
-                breakLoop = false;
-            } else {
-                pr.println(str.trim());
-                pr.flush();
-                
-                str = bf.readLine();
-                System.out.println("\nServer: " + str);
+            try {
+                System.out.print("\nClient: ");
+                str = scanner.nextLine();
 
                 if (str.toLowerCase().contains(clientKeyword)) {
+                    pr.println(str);
+                    pr.flush();
                     System.out.println("\nClient Keyword Detected!");
                     breakLoop = false;
                 } else if (str.toLowerCase().contains(serverKeyword)) {
+                    pr.println(str);
+                    pr.flush();
                     System.out.println("\nServer Keyword Detected!");
                     breakLoop = false;
+                } else {
+                    pr.println(str.trim());
+                    pr.flush();
+                    
+                    str = bf.readLine();
+                    System.out.println("\nServer: " + str);
+
+                    if (str.toLowerCase().contains(clientKeyword)) {
+                        System.out.println("\nClient Keyword Detected!");
+                        breakLoop = false;
+                    } else if (str.toLowerCase().contains(serverKeyword)) {
+                        System.out.println("\nServer Keyword Detected!");
+                        breakLoop = false;
+                    }
                 }
+            } catch (IOException e) {
+                System.out.println("\nError: " + e.getMessage());
+                breakLoop = false;
             }
         }
 

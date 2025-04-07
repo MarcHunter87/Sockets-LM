@@ -53,35 +53,39 @@ public class server {
         String str;
         boolean breakLoop = true;
         while (breakLoop) {
-            str = bf.readLine();
+            try{
+                str = bf.readLine();
 
-            System.out.println("\nClient: " + str);
-
-            if (str.toLowerCase().contains(serverKeyword)) {
-                System.out.println("\nServer Keyword Detected!");
-                breakLoop = false;
-            } else if (str.toLowerCase().contains(clientKeyword)) {
-                System.out.println("\nClient Keyword Detected!");
-                breakLoop = false;
-            } else {
-                
-                System.out.print("\nServer: ");
-                str = scanner.nextLine();
+                System.out.println("\nClient: " + str);
 
                 if (str.toLowerCase().contains(serverKeyword)) {
-                    pr.println(str);
-                    pr.flush();
                     System.out.println("\nServer Keyword Detected!");
                     breakLoop = false;
                 } else if (str.toLowerCase().contains(clientKeyword)) {
-                    pr.println(str);
-                    pr.flush();
                     System.out.println("\nClient Keyword Detected!");
                     breakLoop = false;
                 } else {
-                    pr.println(str.trim());
-                    pr.flush();
+                    System.out.print("\nServer: ");
+                    str = scanner.nextLine();
+
+                    if (str.toLowerCase().contains(serverKeyword)) {
+                        pr.println(str);
+                        pr.flush();
+                        System.out.println("\nServer Keyword Detected!");
+                        breakLoop = false;
+                    } else if (str.toLowerCase().contains(clientKeyword)) {
+                        pr.println(str);
+                        pr.flush();
+                        System.out.println("\nClient Keyword Detected!");
+                        breakLoop = false;
+                    } else {
+                        pr.println(str.trim());
+                        pr.flush();
+                    }
                 }
+            } catch (IOException e) {
+                System.out.println("\nError: " + e.getMessage());
+                breakLoop = false;
             }
         }
 
