@@ -129,13 +129,6 @@ public class server {
                     } else if (str.toLowerCase().contains(clientKeyword)) {
                         System.out.println("\nClient " + clientNumber + " Keyword Detected!");
                         breakLoop = true;
-                    } else if (str.toLowerCase().contains(serverKeyword)) {
-                        pr.println(str);
-                        pr.flush();
-                        System.out.println("\nServer Keyword Detected!");
-                        cerrarServidor = true;
-                        breakLoop = true;
-                    } else if (contienePalabraClaveDeOtroCliente(str, clientKeyword)) {
                     } else {
                         System.out.print("\nServer (to Client " + clientNumber + "): ");
                         str = scanner.nextLine();
