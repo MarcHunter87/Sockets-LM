@@ -62,11 +62,6 @@ public class client {
                     pr.flush();
                     System.out.println("\nClient Keyword Detected!");
                     breakLoop = false;
-                } else if (str.toLowerCase().contains(serverKeyword)) {
-                    pr.println(str);
-                    pr.flush();
-                    System.out.println("\nServer Keyword Detected!");
-                    breakLoop = false;
                 } else {
                     pr.println(str.trim());
                     pr.flush();
