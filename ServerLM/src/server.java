@@ -165,7 +165,6 @@ public class server {
                 }
             }
             
-            scanner.close();
             in.close();
             bf.close();
             pr.close();
