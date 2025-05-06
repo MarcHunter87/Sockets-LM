@@ -4,7 +4,7 @@ import java.util.Scanner;
 
 public class client {
 
-    private static String clientKeyword = "bye";
+    private static String clientKeyword;
     private static int port = 1234;
     private static String serverKeyword;
 
@@ -42,6 +42,9 @@ public class client {
 
         InputStreamReader in = new InputStreamReader(s.getInputStream());
         BufferedReader bf = new BufferedReader(in);
+
+        System.out.print("Introduce una palabra clave: ");
+        clientKeyword = scanner.nextLine();
 
         pr.println(clientKeyword);
         pr.flush();
