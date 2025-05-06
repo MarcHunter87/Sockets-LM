@@ -13,7 +13,7 @@ public class server {
     private static ArrayList<Socket> clientSockets = new ArrayList<>();
     private static boolean cerrarServidor = false;
     private static boolean pararBucle = false;
-    private static int maxClients = 1;
+    private static int maxClients = 3;
 
     public static void main(String[] args) throws IOException {
         boolean haHabidoClientes = false;
