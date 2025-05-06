@@ -12,7 +12,12 @@ public class client {
 
         Scanner scanner = new Scanner(System.in);
 
-        System.out.println("PORT_SERVIDOR: " + port);
+        System.out.print("Introduce una palabra clave: ");
+        clientKeyword = scanner.nextLine();
+
+        clientKeyword = clientKeyword.toLowerCase();
+
+        System.out.println("\nPORT_SERVIDOR: " + port);
         System.out.println("PARAULA_CLAU_CLIENT: " + clientKeyword);
 
         System.out.println("\nClient chat to port " + port);
@@ -27,8 +32,6 @@ public class client {
             return;
         }
 
-        System.out.println("\n");
-
         PrintWriter pr;
         try {
             pr = new PrintWriter(s.getOutputStream());
@@ -42,9 +45,6 @@ public class client {
 
         InputStreamReader in = new InputStreamReader(s.getInputStream());
         BufferedReader bf = new BufferedReader(in);
-
-        System.out.print("Introduce una palabra clave: ");
-        clientKeyword = scanner.nextLine();
 
         pr.println(clientKeyword);
         pr.flush();
