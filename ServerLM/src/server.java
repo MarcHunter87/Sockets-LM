@@ -11,12 +11,27 @@ public class server {
     private static ArrayList<String> clientKeywords = new ArrayList<>();
     private static ArrayList<Thread> clientThreads = new ArrayList<>();
     private static ArrayList<Socket> clientSockets = new ArrayList<>();
-    private static boolean cerrarServidor = false;
     private static boolean pararBucle = false;
-    private static int maxClients = 3;
+    private static int maxClients;
+    private static Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) throws IOException {
-        boolean haHabidoClientes = false;
+        if (args.length != 1) {
+            System.out.println("Introduce the maximum number of clients available to connect");
+            return;
+        }
+
+        try {
+            maxClients = Integer.parseInt(args[0]);
+            if (maxClients <= 0) {
+                System.out.println("The maximum number of clients must be greater than 0");
+                return;
+            }
+        } catch (NumberFormatException e) {
+            System.out.println("The maximum number of clients must be a valid number");
+            return;
+        }
+
         ServerSocket ss = new ServerSocket(port);
 
         System.out.println("PORT_SERVIDOR: " + port);
@@ -25,33 +40,9 @@ public class server {
         System.out.println("\nInicializing Server: OK");
 
         while (!pararBucle) {
-            for (int i = 0; i < clientThreads.size(); i++) {
-                if (!clientThreads.get(i).isAlive()) {
-                    clientThreads.remove(i);
-                    clientKeywords.remove(i);
-                    clientSockets.remove(i);
-                    i--;
-                }
-            }
-
-            if (haHabidoClientes && clientThreads.isEmpty()) {
-                System.out.println("\nNo more Clients connected. Closing server.");
-                pararBucle = true;
-            }
-
-            if (cerrarServidor) {
-                for (Socket cs : clientSockets) {
-                    try {
-                        cs.close();
-                    } catch (IOException e) {}
-                }
-                pararBucle = true;
-            }
-
             if (!pararBucle && clientThreads.size() < maxClients) {
                 try {
                     Socket s = ss.accept();
-                    haHabidoClientes = true;
                     Thread t = new Thread(new Runnable() {
                         public void run() {
                             handleClient(s);
@@ -74,6 +65,22 @@ public class server {
                     System.out.println("\nConnection from Client: " + e.getMessage());
                     pararBucle = true;
                 }
+            } else if (!pararBucle) {
+                try {
+                    Socket s = ss.accept();
+                    BufferedReader bf = new BufferedReader(new InputStreamReader(s.getInputStream()));
+                    bf.readLine();
+                    PrintWriter pr = new PrintWriter(s.getOutputStream());
+                    pr.println("SERVER_FULL");
+                    pr.flush();
+                    pr.close();
+                    bf.close();
+                    s.close();
+
+                    System.out.println("\n\nRejected new client connection: server full");
+                } catch (IOException e) {
+                    System.out.println("\nError rejecting new client connection: " + e.getMessage());
+                }
             }
         }
 
@@ -83,7 +90,6 @@ public class server {
     }
 
     private static void handleClient(Socket s) {
-        Scanner scanner = new Scanner(System.in);
         int clientNumber = -1;
 
         try {
@@ -119,14 +125,16 @@ public class server {
             String str;
             boolean breakLoop = false;
             
-            while (!breakLoop && !cerrarServidor) {
+            while (!breakLoop) {
                 try {
                     str = bf.readLine();
-                    System.out.println("\nClient " + clientNumber + ": " + str);
-
                     if (str == null) {
                         breakLoop = true;
-                    } else if (str.toLowerCase().contains(clientKeyword)) {
+                        continue;
+                    }
+                    System.out.println("\nClient " + clientNumber + ": " + str);
+
+                    if (str.toLowerCase().contains(clientKeyword)) {
                         System.out.println("\nClient " + clientNumber + " Keyword Detected!");
                         breakLoop = true;
                     } else {
@@ -145,8 +153,8 @@ public class server {
                             }
                             
                             System.out.println("\nServer Keyword Detected!");
-                            cerrarServidor = true;
                             breakLoop = true;
+                            pararBucle = true;
                         } else if (str.toLowerCase().contains(clientKeyword)) {
                             pr.println(str);
                             pr.flush();
@@ -171,6 +179,22 @@ public class server {
             pr.close();
             System.out.println("\nClosing Chat for Client " + clientNumber + ": OK");
             s.close();
+
+            synchronized (clientSockets) {
+                int index = clientSockets.indexOf(s);
+                if (index != -1) {
+                    clientSockets.remove(index);
+                    clientKeywords.remove(index);
+                    clientThreads.remove(index);
+                }
+            }
+
+            if (clientSockets.isEmpty() && !pararBucle) {
+                System.out.println("\nNo more clients connected.");
+                System.out.println("\nClosing server.");
+                pararBucle = true;
+                System.exit(0);
+            }
         } catch (IOException e) {
             System.out.println("\nInicializing Chat for Client " + clientNumber + ":  " + e.getMessage());
         }

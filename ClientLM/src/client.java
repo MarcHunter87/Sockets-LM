@@ -50,6 +50,16 @@ public class client {
         pr.flush();
         serverKeyword = bf.readLine();
 
+        if ("SERVER_FULL".equals(serverKeyword)) {
+            System.out.println("\nThe server is full.");
+            pr.close();
+            in.close();
+            bf.close();
+            s.close();
+            scanner.close();
+            return;
+        }
+
         String str;
         boolean breakLoop = false;
         while (!breakLoop) {
@@ -67,6 +77,11 @@ public class client {
                     pr.flush();
                     
                     str = bf.readLine();
+                    if (str == null) {
+                        System.out.println("\nConexion ended by server");
+                        breakLoop = true;
+                        continue;
+                    }
                     System.out.println("\nServer: " + str);
 
                     if (str.toLowerCase().contains(clientKeyword)) {
@@ -84,9 +99,9 @@ public class client {
         }
 
         try {
-			scanner.close();
-			pr.close();
-			in.close();
+            scanner.close();
+            pr.close();
+            in.close();
             bf.close();
             System.out.println("\nClosing Chat: OK");
         } catch (IOException e) {
@@ -100,6 +115,6 @@ public class client {
             System.out.println("\nClosing Client: " + e.getMessage());
         }
 
-		System.out.println("\nBye!");
+        System.out.println("\nBye!");
     }
 }
