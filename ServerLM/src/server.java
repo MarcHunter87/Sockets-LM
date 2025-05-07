@@ -12,6 +12,7 @@ public class server {
     private static ArrayList<Thread> clientThreads = new ArrayList<>();
     private static ArrayList<Socket> clientSockets = new ArrayList<>();
     private static boolean pararBucle = false;
+    private static boolean breakLoop = false;
     private static int maxClients;
     private static Scanner scanner = new Scanner(System.in);
 
@@ -40,9 +41,9 @@ public class server {
         System.out.println("\nInicializing Server: OK");
 
         while (!pararBucle) {
-            if (!pararBucle && clientThreads.size() < maxClients) {
-                try {
-                    Socket s = ss.accept();
+            try {
+                Socket s = ss.accept();
+                if (clientThreads.size() < maxClients) {
                     Thread t = new Thread(new Runnable() {
                         public void run() {
                             handleClient(s);
@@ -61,13 +62,7 @@ public class server {
                     }
                     System.out.println("\nConnection from Client " + clientNumber + ": OK");
                     t.start();
-                } catch (IOException e) {
-                    System.out.println("\nConnection from Client: " + e.getMessage());
-                    pararBucle = true;
-                }
-            } else if (!pararBucle) {
-                try {
-                    Socket s = ss.accept();
+                } else {
                     BufferedReader bf = new BufferedReader(new InputStreamReader(s.getInputStream()));
                     bf.readLine();
                     PrintWriter pr = new PrintWriter(s.getOutputStream());
@@ -76,10 +71,11 @@ public class server {
                     pr.close();
                     bf.close();
                     s.close();
-
-                    System.out.println("\n\nRejected new client connection: server full");
-                } catch (IOException e) {
-                    System.out.println("\nError rejecting new client connection: " + e.getMessage());
+                    System.out.println("\nRejected new client connection: server full");
+                }
+            } catch (IOException e) {
+                if (!pararBucle) {
+                    System.out.println("\nError handling client connection: " + e.getMessage());
                 }
             }
         }
@@ -123,7 +119,6 @@ public class server {
             pr.println(serverKeyword);
             pr.flush();
             String str;
-            boolean breakLoop = false;
             
             while (!breakLoop) {
                 try {
