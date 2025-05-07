@@ -134,8 +134,16 @@ public class server {
                         str = scanner.nextLine();
 
                         if (str.toLowerCase().contains(serverKeyword)) {
-                            pr.println(str);
-                            pr.flush();
+                            synchronized (clientSockets) {
+                                for (Socket cs : clientSockets) {
+                                    try {
+                                        PrintWriter prEspecifico = new PrintWriter(cs.getOutputStream());
+                                        prEspecifico.println(serverKeyword);
+                                        prEspecifico.flush();
+                                    } catch (IOException e) {}
+                                }
+                            }
+                            
                             System.out.println("\nServer Keyword Detected!");
                             cerrarServidor = true;
                             breakLoop = true;
