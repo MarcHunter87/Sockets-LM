@@ -35,7 +35,6 @@ public class client {
         PrintWriter pr;
         try {
             pr = new PrintWriter(s.getOutputStream());
-            System.out.println("\nInicializing Chat: OK");
         } catch (IOException e) {
             System.out.println("\nInicializing Chat: " + e.getMessage());
             scanner.close();
@@ -51,6 +50,7 @@ public class client {
         serverKeyword = bf.readLine();
 
         if ("SERVER_FULL".equals(serverKeyword)) {
+            System.out.println("\nInicializing Chat: ERROR");
             System.out.println("\nThe server is full.");
             pr.close();
             in.close();
@@ -59,6 +59,8 @@ public class client {
             scanner.close();
             return;
         }
+
+        System.out.println("\nInicializing Chat: OK");
 
         String str;
         boolean breakLoop = false;
