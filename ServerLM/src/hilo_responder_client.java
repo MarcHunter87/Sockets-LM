@@ -8,7 +8,8 @@ public class hilo_responder_client implements Runnable {
     private ArrayList<Socket> clientSockets;
     private ArrayList<String> clientKeywords;
     private ArrayList<Thread> clientThreads;
-    private String serverKeyword;
+    private final String serverKeyword;
+    private String clientKeyword;
     private Scanner scanner;
 
     public hilo_responder_client(Socket s, int clientIdx, ArrayList<Socket> clientSockets, ArrayList<String> clientKeywords, ArrayList<Thread> clientThreads, String serverKeyword, Scanner scanner) {
@@ -32,10 +33,10 @@ public class hilo_responder_client implements Runnable {
 
             BufferedReader bf = new BufferedReader(in);
             PrintWriter pr = new PrintWriter(s.getOutputStream());
-            serverKeyword = bf.readLine();
+            clientKeyword = bf.readLine();
 
             synchronized (clientKeywords) {
-                clientKeywords.set(clientIndex, serverKeyword);
+                clientKeywords.set(clientIndex, clientKeyword);
             }
 
             pr.println(serverKeyword);
@@ -49,45 +50,31 @@ public class hilo_responder_client implements Runnable {
 
                     if (str == null) {
                         breakLoop = true;
-                        continue;
-                    }
-
-                    System.out.println("\nClient " + clientNumber + ": " + str);
-
-                    String clientKeyword = clientKeywords.get(clientIndex);
-
-                    if (clientKeyword != null && str.toLowerCase().contains(clientKeyword.toLowerCase())) {
-                        System.out.println("\nClient " + clientNumber + " Keyword Detected!");
-                        breakLoop = true;
-                    } else if (str.toLowerCase().contains(serverKeyword)) {
-                        synchronized (clientSockets) {
-                            for (Socket cs : clientSockets) {
-                                if (cs != null) {
-                                    try {
-                                        PrintWriter prEspecifico = new PrintWriter(cs.getOutputStream());
-                                        prEspecifico.println(serverKeyword);
-                                        prEspecifico.flush();
-                                    } catch (IOException e) {}
-                                }
-                            }
-                        }
-                        
-                        System.out.println("\nServer Keyword Detected!");
-                        breakLoop = true;
                     } else {
-                        System.out.print("\nServer (to Client " + clientNumber + "): ");
+                        System.out.println("\nClient " + clientNumber + ": " + str);
 
-                        String respuesta = scanner.nextLine();
-
-                        pr.println(respuesta.trim());
-                        pr.flush();
-
-                        if (respuesta.toLowerCase().contains(clientKeyword != null ? clientKeyword.toLowerCase() : "")) {
+                        String clientKeyword = clientKeywords.get(clientIndex);
+                        
+                        if (str.toLowerCase().contains(clientKeyword.toLowerCase())) {
                             System.out.println("\nClient " + clientNumber + " Keyword Detected!");
                             breakLoop = true;
-                        } else if (respuesta.toLowerCase().contains(serverKeyword)) {
-                            System.out.println("\nServer Keyword Detected!");
-                            breakLoop = true;
+                        } else {
+                            System.out.print("\nServer (to Client " + clientNumber + "): ");
+                            String respuesta = scanner.nextLine();
+
+                            pr.println(respuesta.trim());
+                            pr.flush();
+
+                            if (respuesta.toLowerCase().contains(clientKeyword.toLowerCase())) {
+                                System.out.println("\nClient " + clientNumber + " Keyword Detected!");
+                                breakLoop = true;
+                            } else if (respuesta.toLowerCase().contains(serverKeyword)) {
+                                pr.println(serverKeyword);
+                                pr.flush();
+                                
+                                System.out.println("\nServer Keyword Detected!");
+                                breakLoop = true;
+                            }
                         }
                     }
                 } catch (IOException e) {

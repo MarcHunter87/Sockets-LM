@@ -79,19 +79,19 @@ public class client {
                     pr.flush();
                     
                     str = bf.readLine();
-                    if (str == null) {
+                    if (str != null) {
+                        System.out.println("\nServer: " + str);
+                        if (str.toLowerCase().contains(clientKeyword)) {
+                            System.out.println("\nClient Keyword Detected!");
+                            breakLoop = true;
+                        } else if (str.toLowerCase().contains(serverKeyword)) {
+                            System.out.println("\nServer Keyword Detected!");
+                            breakLoop = true;
+                        }
+                    } else {
                         System.out.println("\nConexion ended by server");
                         breakLoop = true;
                         continue;
-                    }
-                    System.out.println("\nServer: " + str);
-
-                    if (str.toLowerCase().contains(clientKeyword)) {
-                        System.out.println("\nClient Keyword Detected!");
-                        breakLoop = true;
-                    } else if (str.toLowerCase().contains(serverKeyword)) {
-                        System.out.println("\nServer Keyword Detected!");
-                        breakLoop = true;
                     }
                 }
             } catch (IOException e) {
