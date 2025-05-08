@@ -72,6 +72,19 @@ public class hilo_responder_client implements Runnable {
                                 pr.println(serverKeyword);
                                 pr.flush();
                                 
+                                synchronized (clientSockets) {
+                                    for (int i = 0; i < clientSockets.size(); i++) {
+                                        if (i != clientIndex && clientSockets.get(i) != null) {
+                                            try {
+                                                PrintWriter prClienteEspecifico = new PrintWriter(clientSockets.get(i).getOutputStream());
+
+                                                prClienteEspecifico.println(serverKeyword);
+                                                prClienteEspecifico.flush();
+                                            } catch (IOException e) {}
+                                        }
+                                    }
+                                }
+
                                 System.out.println("\nServer Keyword Detected!");
                                 breakLoop = true;
                             }
