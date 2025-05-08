@@ -41,18 +41,30 @@ public class server {
         System.out.println("\nServer chat at port " + port);
         System.out.println("\nInicializing Server: OK");
 
-        Thread acceptThread = new Thread(() -> {
+        Thread aceptarHiloClient = new Thread(() -> {
             while (serverActive) {
                 try {
                     Socket s = ss.accept();
 
                     synchronized (clientSockets) {
                         if (numClientesConectados() < maxClients) {
-                            clientSockets.add(s);
-                            clientThreads.add(null);
-                            clientKeywords.add(null);
+                            int clientIndex = -1;
+                            
+                            for (int i = 0; i < clientSockets.size(); i++) {
+                                if (clientSockets.get(i) == null && clientIndex == -1) {
+                                    clientIndex = i;
+                                    clientSockets.set(i, s);
+                                    clientThreads.set(i, null);
+                                    clientKeywords.set(i, null);
+                                }
+                            }
 
-                            int clientIndex = clientSockets.size() - 1;
+                            if (clientIndex == -1) {
+                                clientSockets.add(s);
+                                clientThreads.add(null);
+                                clientKeywords.add(null);
+                                clientIndex = clientSockets.size() - 1;
+                            }
 
                             Thread t = new Thread(new hilo_client(s, clientIndex, clientSockets, clientKeywords, clientThreads, serverKeyword, scanner));
                             clientThreads.set(clientIndex, t);
@@ -83,7 +95,7 @@ public class server {
             }
         });
         
-        acceptThread.start();
+        aceptarHiloClient.start();
 
         while (serverActive) {
             synchronized (clientSockets) {
@@ -98,10 +110,6 @@ public class server {
                     } catch (IOException e) {}
                 }
             }
-
-            try { 
-                Thread.sleep(500); 
-            } catch (InterruptedException e) {}
         }
 
         System.out.println("\nClosing Server: OK");
