@@ -22,8 +22,6 @@ public class server {
             return;
         }
 
-        //update
-
         try {
             maxClients = Integer.parseInt(args[0]);
 

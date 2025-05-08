@@ -16,7 +16,7 @@ public class client {
         clientKeyword = scanner.nextLine();
 
         clientKeyword = clientKeyword.toLowerCase();
-        //update
+        
         System.out.println("\nPORT_SERVIDOR: " + port);
         System.out.println("PARAULA_CLAU_CLIENT: " + clientKeyword);
 
