@@ -84,7 +84,7 @@ public class hilo_responder_client implements Runnable {
                                         }
                                     }
                                 }
-
+                                
                                 System.out.println("\nServer Keyword Detected!");
                                 breakLoop = true;
                             }
