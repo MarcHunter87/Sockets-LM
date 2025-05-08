@@ -41,82 +41,62 @@ public class server {
         System.out.println("\nServer chat at port " + port);
         System.out.println("\nInicializing Server: OK");
 
-        Thread aceptarHiloClient = new Thread(() -> {
-            while (serverActive) {
-                try {
-                    Socket s = ss.accept();
-
-                    synchronized (clientSockets) {
-                        if (numClientesConectados() < maxClients) {
-                            int clientIndex = -1;
-                            
-                            for (int i = 0; i < clientSockets.size(); i++) {
-                                if (clientSockets.get(i) == null && clientIndex == -1) {
-                                    clientIndex = i;
-                                    clientSockets.set(i, s);
-                                    clientThreads.set(i, null);
-                                    clientKeywords.set(i, null);
-                                }
-                            }
-
-                            if (clientIndex == -1) {
-                                clientSockets.add(s);
-                                clientThreads.add(null);
-                                clientKeywords.add(null);
-                                clientIndex = clientSockets.size() - 1;
-                            }
-
-                            Thread t = new Thread(new hilo_client(s, clientIndex, clientSockets, clientKeywords, clientThreads, serverKeyword, scanner));
-                            clientThreads.set(clientIndex, t);
-
-                            System.out.println("\nConnection from Client " + (clientIndex + 1) + ": OK");
-
-                            t.start();
-
-                            if (!primerClienteConectado) {
-                                primerClienteConectado = true;
-                            }
-                        } else {
-                            PrintWriter pr = new PrintWriter(s.getOutputStream());
-                            pr.println("SERVER_FULL");
-                            pr.flush();
-
-                            try { 
-                                Thread.sleep(100); 
-                            } catch (InterruptedException e) {}
-
-                            pr.close();
-                            s.close();
-
-                            System.out.println("\nRejected new client connection: server full");
-                        }
-                    }
-                } catch (IOException e) {}
-            }
-        });
-        
-        aceptarHiloClient.start();
-
         while (serverActive) {
-            synchronized (clientSockets) {
-                if (primerClienteConectado && numClientesConectados() == 0) {
-                    System.out.println("\nNo more clients connected.");
-                    System.out.println("\nClosing server.");
+            try {
+                Socket s = ss.accept();
 
-                    serverActive = false;
+                synchronized (clientSockets) {
+                    if (numClientesConectados() < maxClients) {
+                        int clientIndex = -1;
 
-                    try { 
-                        ss.close(); 
-                    } catch (IOException e) {}
+                        for (int i = 0; i < clientSockets.size(); i++) {
+                            if (clientSockets.get(i) == null && clientIndex == -1) {
+                                clientIndex = i;
+                                clientSockets.set(i, s);
+                                clientThreads.set(i, null);
+                                clientKeywords.set(i, null);
+                            }
+                        }
+
+                        if (clientIndex == -1) {
+                            clientSockets.add(s);
+                            clientThreads.add(null);
+                            clientKeywords.add(null);
+                            clientIndex = clientSockets.size() - 1;
+                        }
+
+                        Thread t = new Thread(new hilo_responder_client(s, clientIndex, clientSockets, clientKeywords, clientThreads, serverKeyword, scanner));
+                        clientThreads.set(clientIndex, t);
+
+                        System.out.println("\nConnection from Client " + (clientIndex + 1) + ": OK");
+
+                        t.start();
+
+                        if (!primerClienteConectado) {
+                            primerClienteConectado = true;
+                        }
+                    } else {
+                        PrintWriter pr = new PrintWriter(s.getOutputStream());
+                        pr.println("SERVER_FULL");
+                        pr.flush();
+
+                        try { 
+                            Thread.sleep(100); 
+                        } catch (InterruptedException e) {}
+
+                        pr.close();
+                        s.close();
+
+                        System.out.println("\nRejected new client connection: server full");
+                    }
                 }
-            }
+            } catch (IOException e) {}
         }
 
-        System.out.println("\nClosing Server: OK");
         System.out.println("\nBye!");
     }
 
-    private static int numClientesConectados() {
+    public static int numClientesConectados() {
         int count = 0;
 
         for (Socket socket : clientSockets) {
@@ -125,5 +105,20 @@ public class server {
             }
         }
         return count;
+    }
+
+    public static void cerrarServidorSinClientes() {
+        synchronized (clientSockets) {
+            if (primerClienteConectado && numClientesConectados() == 0) {
+                System.out.println("\nNo more clients connected.");
+                System.out.println("\nClosing server.");
+
+                serverActive = false;
+
+                try {
+                    ss.close();
+                } catch (IOException e) {}
+            }
+        }
     }
 }

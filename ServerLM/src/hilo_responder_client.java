@@ -2,7 +2,7 @@ import java.io.*;
 import java.net.*;
 import java.util.*;
 
-public class hilo_client implements Runnable {
+public class hilo_responder_client implements Runnable {
     private Socket s;
     private int clientIndex;
     private ArrayList<Socket> clientSockets;
@@ -11,7 +11,7 @@ public class hilo_client implements Runnable {
     private String serverKeyword;
     private Scanner scanner;
 
-    public hilo_client(Socket s, int clientIdx, ArrayList<Socket> clientSockets, ArrayList<String> clientKeywords, ArrayList<Thread> clientThreads, String serverKeyword, Scanner scanner) {
+    public hilo_responder_client(Socket s, int clientIdx, ArrayList<Socket> clientSockets, ArrayList<String> clientKeywords, ArrayList<Thread> clientThreads, String serverKeyword, Scanner scanner) {
         this.s = s;
         this.clientIndex = clientIdx;
         this.clientSockets = clientSockets;
@@ -71,6 +71,7 @@ public class hilo_client implements Runnable {
                                 }
                             }
                         }
+                        
                         System.out.println("\nServer Keyword Detected!");
                         breakLoop = true;
                     } else {
@@ -111,6 +112,8 @@ public class hilo_client implements Runnable {
                 clientSockets.set(clientIndex, null);
                 clientKeywords.set(clientIndex, null);
                 clientThreads.set(clientIndex, null);
+
+                server.cerrarServidorSinClientes();
             }
         } catch (IOException e) {
             System.out.println("\nInicializing Chat for Client " + clientNumber + ":  " + e.getMessage());
