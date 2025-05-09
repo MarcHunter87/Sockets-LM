@@ -59,6 +59,10 @@ public class hilo_responder_client implements Runnable {
                             System.out.println("\nClient " + clientNumber + " Keyword Detected!");
                             breakLoop = true;
                         } else {
+                            if (server.serverKeywordDetected) {
+                                breakLoop = true;
+                                continue;
+                            }
                             System.out.print("\nServer (to Client " + clientNumber + "): ");
                             String respuesta = scanner.nextLine();
 
@@ -86,6 +90,7 @@ public class hilo_responder_client implements Runnable {
                                 }
                                 
                                 System.out.println("\nServer Keyword Detected!");
+                                server.serverKeywordDetected = true;
                                 breakLoop = true;
                             }
                         }

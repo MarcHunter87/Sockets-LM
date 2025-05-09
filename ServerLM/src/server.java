@@ -15,6 +15,7 @@ public class server {
     private static int maxClients;
     private static boolean primerClienteConectado = false;
     private static Scanner scanner = new Scanner(System.in);
+    public static boolean serverKeywordDetected = false;
 
     public static void main(String[] args) throws IOException {
         if (args.length != 1) {
