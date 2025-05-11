@@ -2,8 +2,8 @@ import java.io.*;
 import java.net.*;
 import java.util.*;
 
-public class Server {
-    private static final int PORT = 12345;
+public class server {
+    private static final int PORT = 1234;
     private static Map<String, ClientHandler> clients = Collections.synchronizedMap(new HashMap<>());
 
     public static void main(String[] args) {
@@ -20,14 +20,16 @@ public class Server {
     	    return;
     	}
 
-        System.out.println("Servidor iniciado en el puerto " + PORT);
+        System.out.println("PORT_SERVIDOR: " + PORT);
+        System.out.println("PARAULA_CLAU_SERVIDOR: CERRAR_SERVER");
+        System.out.println("\nEl chat de clientes está disponible en el puerto " + PORT);
 
         // Hilo para leer comandos desde consola del servidor
         new Thread(() -> {
             try (BufferedReader console = new BufferedReader(new InputStreamReader(System.in))) {
                 String command;
                 while ((command = console.readLine()) != null) {
-                    if (command.equalsIgnoreCase("CERRAR_SERVER")) {
+                    if (command.toLowerCase().contains("cerrar_server")) {
                         System.out.println("Servidor apagado manualmente.");
                         System.exit(0);
                     }
@@ -99,8 +101,10 @@ public class Server {
                 out = new PrintWriter(socket.getOutputStream(), true);
                 in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
-                out.println("Ingresa tu nombre:");
+                out.println("Ingresa tu nombre: ");
                 name = in.readLine();
+
+                System.out.println("Nombre recibido: '" + name + "'");
 
                 if (name == null || name.trim().isEmpty() || name.contains(" ")) {
                     out.println("Nombre inválido (no puede estar vacío ni contener espacios). Cerrando conexión.");
