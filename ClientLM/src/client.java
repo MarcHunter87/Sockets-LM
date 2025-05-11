@@ -1,13 +1,15 @@
 import java.net.*;
 import java.io.*;
 import java.util.Scanner;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class client {
 
     private static String clientKeyword;
     private static int port = 1234;
     private static String serverKeyword;
+    private static boolean running = true;
+    private static boolean puedeEnviar = true;
+    private static boolean gestionarSalto = false;
 
     public static void main(String[] args) throws IOException {
 
@@ -65,26 +67,23 @@ public class client {
 
         System.out.println("\nInicializing Chat: OK");
 
-        AtomicBoolean running = new AtomicBoolean(true);
-        AtomicBoolean puedeEnviar = new AtomicBoolean(true);
-        AtomicBoolean gestionarSalto = new AtomicBoolean(false);
-
         Thread serverListener = new Thread(() -> {
             try {
                 String mensajeServidor;
-                while (running.get() && (mensajeServidor = bf.readLine()) != null) {
-                    if (gestionarSalto.get()) {
+                while (running && (mensajeServidor = bf.readLine()) != null) {
+                    if (gestionarSalto) {
                         System.out.println();
                     }
                     System.out.println("\nServer: " + mensajeServidor);
 
-                    puedeEnviar.set(true);
+                    puedeEnviar = true;
 
                     if (mensajeServidor.toLowerCase().contains(clientKeyword)) {
                         System.out.println("\nClient Keyword Detected!");
-                        
-                        running.set(false);
-
+                        System.out.println("\nClosing Chat: OK");
+                        System.out.println("\nClosing Client: OK");
+                        System.out.println("\nBye!");
+                        running = false;
                         try {
                             s.close();
                         } catch (IOException ex) {}
@@ -94,9 +93,10 @@ public class client {
                     
                     if (mensajeServidor.toLowerCase().contains(serverKeyword)) {
                         System.out.println("\nServer Keyword Detected!");
-
-                        running.set(false);
-
+                        System.out.println("\nClosing Chat: OK");
+                        System.out.println("\nClosing Client: OK");
+                        System.out.println("\nBye!");
+                        running = false;
                         try {
                             s.close();
                         } catch (IOException ex) {}
@@ -104,11 +104,9 @@ public class client {
                         System.exit(0);
                     }
                 }
-                if (running.get()) {
+                if (running) {
                     System.out.println("\nConexion ended by server");
-                    
-                    running.set(false);
-
+                    running = false;
                     try {
                         s.close();
                     } catch (IOException ex) {}
@@ -116,11 +114,10 @@ public class client {
                     System.exit(0);
                 }
             } catch (IOException e) {
-                if (running.get()) {
-                    
+                if (running) {
                     System.out.println("\nConexion ended by server");
-                    running.set(false);
-
+                    running = false;
+                    
                     try {
                         s.close();
                     } catch (IOException ex) {}
@@ -133,40 +130,41 @@ public class client {
         serverListener.start();
 
         String str;
-        while (running.get()) {
-            while (!puedeEnviar.get() && running.get()) {
+        while (running) {
+            while (!puedeEnviar && running) {
                 try {
                     Thread.sleep(50);
                 } catch (InterruptedException e) {}
             }
 
-            if (!running.get()){
+            if (!running){
                 continue;
             }
 
-            gestionarSalto.set(true);
+            gestionarSalto = true;
+
             System.out.print("\nClient: ");
-
+            
             str = scanner.nextLine();
-            gestionarSalto.set(false);
+            gestionarSalto = false;
 
-            if (!running.get()){
+            if (!running){
                 continue;
             }
             if (str.toLowerCase().contains(clientKeyword)) {
                 pr.println(str);
                 pr.flush();
 
-                puedeEnviar.set(false);
+                puedeEnviar = false;
 
                 System.out.println("\nClient Keyword Detected!");
 
-                running.set(false);
+                running = false;
             } else {
                 pr.println(str.trim());
                 pr.flush();
 
-                puedeEnviar.set(false);
+                puedeEnviar = false;
             }
         }
 
