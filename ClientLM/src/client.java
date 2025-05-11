@@ -1,122 +1,73 @@
-import java.net.*;
 import java.io.*;
-import java.util.Scanner;
+import java.net.*;
 
-public class client {
+public class Cliente {
+    private static final String SERVER_IP = "localhost";
+    private static final int SERVER_PORT = 12345;
 
-    private static String clientKeyword;
-    private static int port = 1234;
-    private static String serverKeyword;
+    public static void main(String[] args) {
+        try (BufferedReader console = new BufferedReader(new InputStreamReader(System.in))) {
 
-    public static void main(String[] args) throws IOException {
+            System.out.print("Escribe tu palabra clave para salir (ej: SALIR): ");
+            String claveSalida = console.readLine();
 
-        Scanner scanner = new Scanner(System.in);
+            System.out.println("Conectando al servidor...");
+            Socket socket = new Socket(SERVER_IP, SERVER_PORT);
 
-        System.out.print("Introduce una palabra clave: ");
-        clientKeyword = scanner.nextLine();
-
-        clientKeyword = clientKeyword.toLowerCase();
-        
-        System.out.println("\nPORT_SERVIDOR: " + port);
-        System.out.println("PARAULA_CLAU_CLIENT: " + clientKeyword);
-
-        System.out.println("\nClient chat to port " + port);
-
-        Socket s;
-        try {
-            s = new Socket("localhost", port);
-            System.out.println("\nInicializing Client: OK");
-        } catch (IOException e) {
-            System.out.println("\nInicializing Client: " + e.getMessage());
-            scanner.close();
-            return;
-        }
-
-        PrintWriter pr;
-        try {
-            pr = new PrintWriter(s.getOutputStream());
-        } catch (IOException e) {
-            System.out.println("\nInicializing Chat: " + e.getMessage());
-            scanner.close();
-            s.close();
-            return;
-        }
-
-        InputStreamReader in = new InputStreamReader(s.getInputStream());
-        BufferedReader bf = new BufferedReader(in);
-
-        pr.println(clientKeyword);
-        pr.flush();
-        serverKeyword = bf.readLine();
-
-        if ("SERVER_FULL".equals(serverKeyword)) {
-            System.out.println("\nInicializing Chat: ERROR");
-            System.out.println("\nThe server is full.");
-            pr.close();
-            in.close();
-            bf.close();
-            s.close();
-            scanner.close();
-            return;
-        }
-
-        System.out.println("\nInicializing Chat: OK");
-
-        String str;
-        boolean breakLoop = false;
-        while (!breakLoop) {
-            try {
-                System.out.print("\nClient: ");
-                str = scanner.nextLine();
-
-                if (str.toLowerCase().contains(clientKeyword)) {
-                    pr.println(str);
-                    pr.flush();
-                    System.out.println("\nClient Keyword Detected!");
-                    breakLoop = true;
-                } else {
-                    pr.println(str.trim());
-                    pr.flush();
-                    
-                    str = bf.readLine();
-                    if (str != null) {
-                        System.out.println("\nServer: " + str);
-                        if (str.toLowerCase().contains(clientKeyword)) {
-                            System.out.println("\nClient Keyword Detected!");
-                            breakLoop = true;
-                        } else if (str.toLowerCase().contains(serverKeyword)) {
-                            System.out.println("\nServer Keyword Detected!");
-                            breakLoop = true;
-                        }
-                    } else {
-                        System.out.println("\nConexion ended by server");
-                        breakLoop = true;
-                        continue;
-                    }
+            try (
+                PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+                BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))
+            ) {
+                // Leer primer mensaje del servidor
+                String serverMessage = in.readLine();
+                if (serverMessage != null && serverMessage.toLowerCase().contains("servidor lleno")) {
+                    System.out.println("❌ " + serverMessage);
+                    socket.close();
+                    return;
                 }
+
+                System.out.println(serverMessage); // Ingresa tu nombre:
+                String name = console.readLine();
+                out.println(name);
+
+                // Hilo para recibir mensajes del servidor
+                Thread readThread = new Thread(() -> {
+                    try {
+                        String response;
+                        while ((response = in.readLine()) != null) {
+                            System.out.println(response);
+                            if (response.trim().equalsIgnoreCase(claveSalida)) {
+                                System.out.println("🚪 Palabra clave recibida desde el servidor. Saliendo...");
+                                System.exit(0);
+                            }
+                        }
+                    } catch (IOException e) {
+                        System.out.println("⚠️ El servidor cerró la conexión.");
+                    } finally {
+                        System.exit(0);
+                    }
+                });
+                readThread.setDaemon(true);
+                readThread.start();
+
+                // Leer y enviar mensajes al servidor
+                String message;
+                while ((message = console.readLine()) != null) {
+                    if (message.equalsIgnoreCase(claveSalida)) {
+                        System.out.println("Palabra clave detectada. Saliendo del chat...");
+                        System.exit(0);
+                    }
+                    out.println(message);
+                }
+
             } catch (IOException e) {
-                System.out.println("\nError: " + e.getMessage());
-                breakLoop = true;
+                System.out.println("❌ Error durante la comunicación con el servidor.");
+            } finally {
+                socket.close();
             }
-        }
 
-        try {
-            scanner.close();
-            pr.close();
-            in.close();
-            bf.close();
-            System.out.println("\nClosing Chat: OK");
         } catch (IOException e) {
-            System.out.println("\nClosing Chat: " + e.getMessage());
+            System.out.println("❌ No se pudo conectar al servidor.");
         }
-
-        try {
-            s.close();
-            System.out.println("\nClosing Client: OK");
-        } catch (IOException e) {
-            System.out.println("\nClosing Client: " + e.getMessage());
-        }
-
-        System.out.println("\nBye!");
     }
 }
