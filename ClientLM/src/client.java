@@ -64,7 +64,7 @@ public class client {
                         System.out.println("Palabra clave detectada. Saliendo del chat...");
                         System.exit(0);
                     }
-                    out.println("[" + name + "]: " + message);
+                    out.println(message);
                 }
 
             } catch (IOException e) {
