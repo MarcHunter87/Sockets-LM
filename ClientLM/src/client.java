@@ -24,7 +24,7 @@ public class client {
                 // Leer primer mensaje del servidor
                 String serverMessage = in.readLine();
                 if (serverMessage != null && serverMessage.toLowerCase().contains("servidor lleno")) {
-                    System.out.println("❌ " + serverMessage + "");
+                    System.out.println(serverMessage);
                     socket.close();
                     return;
                 }
@@ -49,7 +49,7 @@ public class client {
                             }
                         }
                     } catch (IOException e) {
-                        System.out.println("⚠️ El servidor cerró la conexión.");
+                        System.out.println("El servidor cerró la conexión.");
                     } finally {
                         System.exit(0);
                     }

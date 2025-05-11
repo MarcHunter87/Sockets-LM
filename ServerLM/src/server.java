@@ -37,7 +37,7 @@ public class server {
                     if (command.startsWith("para:")) {
                         int sep = command.indexOf(' ');
                         if (sep == -1) {
-                            System.out.println("❌ Formato inválido. Usa: para:Nombre mensaje");
+                            System.out.println("Formato inválido. Usa: para:Nombre mensaje");
                             continue;
                         }
 
@@ -48,7 +48,7 @@ public class server {
                         if (target != null) {
                             target.sendMessage("[Servidor]: " + message);
                         } else {
-                            System.out.println("❌ Cliente '" + targetName + "' no encontrado.");
+                            System.out.println("Cliente '" + targetName + "' no encontrado.");
                         }
                     } else {
                         System.out.println("Usa el formato: para:Nombre mensaje");
