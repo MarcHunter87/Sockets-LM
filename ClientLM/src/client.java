@@ -44,7 +44,7 @@ public class client {
                         while ((response = in.readLine()) != null) {
                             System.out.println(response);
                             if (response.trim().toLowerCase().contains(claveSalida.toLowerCase())) {
-                                System.out.println("🚪 Palabra clave recibida desde el servidor. Saliendo...");
+                                System.out.println("Palabra clave recibida desde el servidor. Saliendo...");
                                 Cerrar();
                             }
                         }
