@@ -32,7 +32,7 @@ public class server {
                 while ((command = console.readLine()) != null) {
                     if (command.toLowerCase().contains("cerrar_server")) {
                         System.out.println("Servidor apagado manualmente.");
-                        System.exit(0);
+                        Cerrar();
                     }
 
                     if (command.startsWith("para:")) {
@@ -145,11 +145,15 @@ public class server {
                     synchronized (clients) {
                         if (clients.isEmpty() && huboAlMenosUnCliente) {
                             System.out.println("Todos los clientes se han desconectado. Cerrando servidor.");
-                            System.exit(0);
+                            Cerrar();
                         }
                     }
                 }
             }
         }
+    }
+
+    private static void Cerrar() {
+        System.exit(0);
     }
 }

@@ -45,13 +45,13 @@ public class client {
                             System.out.println(response);
                             if (response.trim().toLowerCase().contains(claveSalida.toLowerCase())) {
                                 System.out.println("🚪 Palabra clave recibida desde el servidor. Saliendo...");
-                                System.exit(0);
+                                Cerrar();
                             }
                         }
                     } catch (IOException e) {
                         System.out.println("El servidor cerró la conexión.");
                     } finally {
-                        System.exit(0);
+                        Cerrar();
                     }
                 });
                 readThread.setDaemon(true);
@@ -62,7 +62,7 @@ public class client {
                 while ((message = console.readLine()) != null) {
                     if (message.toLowerCase().contains(claveSalida.toLowerCase())) {
                         System.out.println("Palabra clave detectada. Saliendo del chat...");
-                        System.exit(0);
+                        Cerrar();
                     }
                     out.println(message);
                 }
@@ -76,5 +76,9 @@ public class client {
         } catch (IOException e) {
             System.out.println("No se pudo conectar al servidor.");
         }
+    }
+
+    private static void Cerrar() {
+        System.exit(0);
     }
 }
