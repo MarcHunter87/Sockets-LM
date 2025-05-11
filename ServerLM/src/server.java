@@ -5,6 +5,7 @@ import java.util.*;
 public class server {
     private static final int PORT = 1234;
     private static Map<String, ClientHandler> clients = Collections.synchronizedMap(new HashMap<>());
+    private static boolean huboAlMenosUnCliente = false;
 
     public static void main(String[] args) {
     	if (args.length < 1) {
@@ -119,6 +120,7 @@ public class server {
                         return;
                     }
                     clients.put(name, this);
+                    huboAlMenosUnCliente = true;
                 }
 
                 System.out.println(name + " se ha conectado.");
@@ -140,6 +142,12 @@ public class server {
                 if (name != null) {
                     clients.remove(name);
                     System.out.println("Cliente eliminado: " + name);
+                    synchronized (clients) {
+                        if (clients.isEmpty() && huboAlMenosUnCliente) {
+                            System.out.println("Todos los clientes se han desconectado. Cerrando servidor.");
+                            System.exit(0);
+                        }
+                    }
                 }
             }
         }

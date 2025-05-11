@@ -68,13 +68,13 @@ public class client {
                 }
 
             } catch (IOException e) {
-                System.out.println("❌ Error durante la comunicación con el servidor.");
+                System.out.println("Error durante la comunicación con el servidor.");
             } finally {
                 socket.close();
             }
 
         } catch (IOException e) {
-            System.out.println("❌ No se pudo conectar al servidor.");
+            System.out.println("No se pudo conectar al servidor.");
         }
     }
 }
